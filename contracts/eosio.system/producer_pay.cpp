@@ -209,6 +209,30 @@ void system_contract::onblock(block_timestamp timestamp, account_name producer) 
             }
         }
     }
+<<<<<<< HEAD
+=======
+
+    //called once per day to set payments snapshot
+    if (_gstate.last_claimrewards + uint32_t(172800) <= timestamp.slot) { //172800 blocks in a day
+        print("\nClaimRewards Snapshot");
+        claimrewards(producer);
+        _gstate.last_claimrewards = timestamp.slot;
+    }
+
+    auto p = payments.begin();
+
+    //execute every 5 minutes, should run through all 51 within 4.5 hours
+    if (timestamp.slot >= _gstate.next_payment && p != payments.end()) {
+        auto first = *p;
+
+        INLINE_ACTION_SENDER(eosio::token, transfer)
+        (N(eosio.token), {N(eosio.bpay), N(active)}, {N(eosio.bpay), first.bp, first.pay, std::string("Automatic Producer/Standby Payment")});
+
+        payments.erase(p);
+
+        _gstate.next_payment = (timestamp.slot + uint32_t(600)); //600 blocks in 5 minutes
+    }
+>>>>>>> 5f66ee69b... timepoint math correction
 }
 
 void system_contract::recalculate_votes(){
