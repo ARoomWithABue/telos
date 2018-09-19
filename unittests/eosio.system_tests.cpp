@@ -1951,21 +1951,19 @@ BOOST_FIXTURE_TEST_CASE(producer_onblock_check, eosio_system_tester) try {
 
    // give a chance for everyone to produce blocks
    {
-      // produce_blocks(21 * 12);
-      // ?? and why is there a need for such a high number of blocks for everyone to produce ?? 
-      produce_blocks(21 * 24);
+      produce_blocks(21 * 12);
       // for (uint32_t i = 0; i < producer_names.size(); ++i) {
       //    std::cout<<"["<<producer_names[i]<<"]: "<<get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()<<std::endl;
       // }
 
-      bool all_21_produced = true;
-      for (uint32_t i = 0; i < 21; ++i) {
+      bool all_21_produced = 0 < get_producer_info(producer_names[21])["unpaid_blocks"].as<uint32_t>();
+      for (uint32_t i = 1; i < 21; ++i) {
          if (0 == get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
             all_21_produced= false;
          }
       }
-      bool rest_didnt_produce = true;
-      for (uint32_t i = 21; i < producer_names.size(); ++i) {
+      bool rest_didnt_produce = 0 == get_producer_info(producer_names[0])["unpaid_blocks"].as<uint32_t>();
+      for (uint32_t i = 22; i < producer_names.size(); ++i) {
          if (0 < get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
             rest_didnt_produce = false;
          }
@@ -2317,14 +2315,17 @@ BOOST_FIXTURE_TEST_CASE( elect_producers /*_and_parameters*/, eosio_system_teste
    BOOST_REQUIRE_EQUAL( success(), vote( N(bob111111111), { N(defproducer3) } ) );
    produce_blocks(250);
    producer_keys = control->head_block_state()->active_schedule.producers;
+   /*
+   wdump((producer_keys));
    BOOST_REQUIRE_EQUAL( 3, producer_keys.size() );
+   */
 
    // The test below is invalid now, producer schedule is not updated if there are
    // fewer producers in the new schedule
-   /*
    BOOST_REQUIRE_EQUAL( 2, producer_keys.size() );
    BOOST_REQUIRE_EQUAL( name("defproducer1"), producer_keys[0].producer_name );
    BOOST_REQUIRE_EQUAL( name("defproducer3"), producer_keys[1].producer_name );
+   /*
    //config = config_to_variant( control->get_global_properties().configuration );
    //auto prod3_config = testing::filter_fields( config, producer_parameters_example( 3 ) );
    //REQUIRE_EQUAL_OBJECTS(prod3_config, config);
