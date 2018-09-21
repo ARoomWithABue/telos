@@ -15,7 +15,8 @@ namespace eosiosystem {
     _producers(_self,_self),
     _global(_self,_self),
     _rotations(_self,_self),
-    _rammarket(_self,_self)
+    _rammarket(_self,_self),
+    payments(_self, _self)
    {
       //print( "construct system\n" );
       _gstate = _global.exists() ? _global.get() : get_default_parameters();

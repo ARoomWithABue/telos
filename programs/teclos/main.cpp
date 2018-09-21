@@ -2985,7 +2985,7 @@ int main( int argc, char** argv ) {
    auto biyram = buyram_subcommand(system);
    auto sellram = sellram_subcommand(system);
 
-   auto claimRewards = claimrewards_subcommand(system);
+//    auto claimRewards = claimrewards_subcommand(system);
 
    auto regProxy = regproxy_subcommand(system);
    auto unregProxy = unregproxy_subcommand(system);
